@@ -50,6 +50,7 @@ end
 
 # Use Capistrano for deployment
 gem 'capistrano', '~> 2.15.4'
+gem 'rvm-capistrano'
 #gem 'capistrano' , group: :development
 
 # Use debugger

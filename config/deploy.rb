@@ -19,6 +19,7 @@ default_run_options[:pty] = true
 set :scm, "git"
 
 set :rvm_ruby_string, 'ruby-2.1.1@generator_parameter'
+set :rvm_type, :user
 
 set :repository,  "git@github.com:danko-master/generator_parameter.git"
 set :branch,      "master"
