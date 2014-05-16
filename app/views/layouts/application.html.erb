@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GeneratorParameter</title>
+  <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+  <div class="wrapper">
+    <div id="flash_container">
+      <%= render :partial => "layouts/flash", locals: {flash: flash} %>
+    </div>
+
+    <div id="header">
+      <div class="pull-right">
+        <p>Пользователь</p>
+      </div>
+      <div>
+        <%= render :partial => "layouts/header" %> 
+      </div>
+    </div>
+    <div id="content">
+      <%= yield %>  
+    </div>
+    <div id="footer">
+    </div>      
+  </div>
+
+</body>
+</html>

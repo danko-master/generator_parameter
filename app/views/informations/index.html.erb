@@ -1,0 +1,77 @@
+<%= form_tag informations_path, method: :post do %>
+  <table class="table">
+    <tr>
+      <td colspan="2">
+        <div>
+          Параметр<br/>
+          <%= select_tag :parameter, options_for_select(Parameter.all.collect {|u| [ (u.uom.present? ? "#{u.name}, #{u.uom.name}" : u.name), u.id ] }),  class: "form-control" %>
+        </div>
+        <div>
+          Субъект<br/>
+          <%= select_tag :subject, options_from_collection_for_select(Subject.all, "id", "name"),  class: "form-control input-short" %>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        Функция<br/>
+        <select id="form_select_function" name="function_type" class="form-control input-short">
+          <option value="ustavki">По уставкам</option>
+          <option value="lineal">Линейная, y = k*x + b</option>
+        </select>
+        <div id="d_ustavki" class="d_functions">
+          <%= render partial: 'layouts/functions/ustavki' %>
+        </div>
+        <div id="d_lineal" class="d_functions" style='display: none'>
+          <%= render partial: 'layouts/functions/lineal' %>
+        </div>
+        <br/>
+        Дисперсия <input type="text" name="dispersion" class="form-control input-shorter" >
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div>
+          Начало<br/>
+          <input type="text" data-behaviour='datepicker' name="date_start" class="form-control input-shorter date-start" >
+        </div>
+        <div>
+          Окончание<br/>
+          <input type="text" data-behaviour='datepicker' name="date_end" class="form-control input-shorter date-stop" >
+        </div>
+        <div>
+          Периодичность<br/>
+          <%= select_tag :periodicity, options_for_select(Parameter.periodicity),  class: "form-control input-shorter" %>
+        </div>
+      </td>
+      <td>
+        Данные
+        <% if @tmp_data.present? %>
+          <table class="table table-stripped">
+            <tr>
+              <th>№</th>
+              <th>date_time</th>
+              <th>val_numeric</th>
+              <th>parameter_id</th>
+              <th>subject_id</th>
+            </tr>
+            <% @tmp_data.sort.each do |item| %>
+              <tr>
+                <td><%= item %> (<%= Redis.current.hget(item, "formula_type") %>)</td>
+                <td><%= Date.parse(Redis.current.hget(item, "date_time")).strftime("%d.%m.%Y") if Redis.current.hget(item, "date_time") %></td>              
+                <td><%= Redis.current.hget(item, "val_numeric") %></td> 
+                <td><%= Redis.current.hget(item, "parameter_id") %></td> 
+                <td><%= Redis.current.hget(item, "subject_id") %></td>               
+              </tr>
+            <% end %>
+          </table>
+          <%= link_to "Сохранить в базе все сгенерированные данные", save_all_tmp_informations_path, class: "btn btn-success", confirm: "Вы уверены?" %>
+          <%= link_to "Удалить сгенерированные данные", destroy_all_tmp_informations_path, class: "btn btn-danger", confirm: "Вы уверены?" %>
+        <% end %>  
+      </td>
+    </tr>
+  </table>
+
+  <%= submit_tag "Сгенерировать данные", class: "btn btn-primary", disabled: true, id: "submit_button" %>
+<% end %>
+
