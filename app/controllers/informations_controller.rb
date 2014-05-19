@@ -43,6 +43,7 @@ class InformationsController < ApplicationController
         pv.val_numeric = Redis.current.hget(item, "val_numeric")
         pv.created_at = Time.now()
         pv.updated_at = Time.now()
+        pv.val_string = "from_generator"
         pv.save
       end
     end
