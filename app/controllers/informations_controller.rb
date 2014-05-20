@@ -104,7 +104,7 @@ class InformationsController < ApplicationController
         return nil
       end        
         
-      redis.hmset "param_val:#{preset.id}", "date_time", date_start, "val_numeric", y, "parameter_id", params["parameter"].to_i, "subject_id", params["subject"].to_i, "formula_type", "по уставкам"
+      redis.hmset "param_val:#{preset.id}", "date_time", preset.date_time, "val_numeric", y, "parameter_id", params["parameter"].to_i, "subject_id", params["subject"].to_i, "formula_type", "по уставкам"
     end
   end
 
