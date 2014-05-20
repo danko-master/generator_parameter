@@ -70,7 +70,7 @@ end
 
 
 namespace :unicorn do
-  pid_path = "#{shared_path}/pids"
+  pid_path = "#{deploy_to}/shared/pids"
   unicorn_pid = "#{pid_path}/unicorn.pid"
 
   def run_unicorn
