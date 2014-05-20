@@ -5,7 +5,7 @@ set :application, 'generator_parameter'
 set :repo_url, 'git@github.com:danko-master/generator_parameter.git'
 
 set :rvm_type, :user
-set :rvm_ruby_version, '2.1.1'
+set :rvm_ruby_version, 'ruby-2.1.1@generator_parameter'
 
 
 # Default branch is :master
