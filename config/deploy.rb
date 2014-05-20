@@ -71,4 +71,4 @@ namespace :deploy do
 
 end
 
-after :updating, 'deploy:symlink'
+# after :updating, 'deploy:symlink'
