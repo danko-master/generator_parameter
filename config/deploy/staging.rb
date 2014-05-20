@@ -27,8 +27,8 @@ set :deploy_to, '/home/ubuntu/apps/generator_parameter'
 # --------------
  set :ssh_options, {
    keys: [File.join(ENV["HOME"], ".ssh", "sac.pem")],
-   forward_agent: true,
-   auth_methods: %w(publickey)
+   forward_agent: true #,
+   # auth_methods: %w(publickey)
  }
 #
 # And/or per server (overrides global)
