@@ -9,11 +9,6 @@ set :rvm_type, :user
 set :rvm_ruby_version, 'ruby-2.1.1@generator_parameter'
 
 
-set :unicorn_conf, "#{deploy_to}/current/config/unicorn.rb"
-set :start_cmd,    "bundle exec unicorn_rails -c #{unicorn_conf} -E #{rails_env} -D"
-set :unicorn_pid,  "#{deploy_to}/shared/pids/unicorn.pid"
-
-
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
 
@@ -51,7 +46,7 @@ namespace :deploy do
     on roles(:app), in: :sequence, wait: 5 do
       # Your restart mechanism here, for example:
       # execute :touch, release_path.join('tmp/restart.txt')
-      execute "if [ -f #{unicorn_pid} ] && [ -e /proc/$(cat #{unicorn_pid}) ]; then kill -USR2 `cat #{unicorn_pid}`; else cd #{deploy_to}/current && #{start_cmd}; fi"
+      # execute "if [ -f #{unicorn_pid} ] && [ -e /proc/$(cat #{unicorn_pid}) ]; then kill -USR2 `cat #{unicorn_pid}`; else cd #{deploy_to}/current && #{start_cmd}; fi"
     end
   end
 
@@ -63,6 +58,7 @@ namespace :deploy do
       # within release_path do
       #   execute :rake, 'cache:clear'
       # end
+      invoke 'unicorn:restart'
     end
   end
 
@@ -70,3 +66,50 @@ end
 
 # after 'deploy:finalize_update', 'deploy:symlink'
 # cap production deploy:compile_assets
+
+
+namespace :unicorn do
+  pid_path = "#{shared_path}/pids"
+  unicorn_pid = "#{pid_path}/unicorn.pid"
+
+  def run_unicorn
+    execute "#{fetch(:bundle_binstubs)}/unicorn", "-c #{release_path}/config/unicorn.rb -D -E #{fetch(:stage)}"
+  end
+
+  desc 'Start unicorn'
+  task :start do
+    on roles(:app) do
+      run_unicorn
+    end
+  end
+
+  desc 'Stop unicorn'
+  task :stop do
+    on roles(:app) do
+      if test "[ -f #{unicorn_pid} ]"
+        execute :kill, "-QUIT `cat #{unicorn_pid}`"
+      end
+    end
+  end
+
+  desc 'Force stop unicorn (kill -9)'
+  task :force_stop do
+    on roles(:app) do
+      if test "[ -f #{unicorn_pid} ]"
+        execute :kill, "-9 `cat #{unicorn_pid}`"
+        execute :rm, unicorn_pid
+      end
+    end
+  end
+
+  desc 'Restart unicorn'
+  task :restart do
+    on roles(:app) do
+      if test "[ -f #{unicorn_pid} ]"
+        execute :kill, "-USR2 `cat #{unicorn_pid}`"
+      else
+        run_unicorn
+      end
+    end
+  end
+end
