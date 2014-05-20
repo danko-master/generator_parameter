@@ -13,7 +13,7 @@ set :unicorn_conf, "#{deploy_to}/current/config/unicorn.rb"
 set :unicorn_pid,  "#{deploy_to}/shared/pids/unicorn.pid"
 set :start_cmd,    "bundle exec unicorn_rails -c #{unicorn_conf} -E #{rails_env} -D"
 
-# ssh_options[:forward_agent] = true
+ssh_options[:forward_agent] = true
 default_run_options[:pty] = true
 
 set :scm, "git"
