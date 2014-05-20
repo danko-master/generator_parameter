@@ -16,7 +16,7 @@ role :db,  %w{54.188.217.10}
 # used to set extended properties on the server.
 
 server '54.188.217.10', user: 'ubuntu', roles: %w{web app db}
-set :deploy_to, '/home/ubuntu/apps/#{application}'
+set :deploy_to, '/home/ubuntu/apps/generator_parameter'
 
 # Custom SSH Options
 # ==================
