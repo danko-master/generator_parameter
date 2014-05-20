@@ -1,14 +1,14 @@
 GeneratorParameter::Application.routes.draw do
 
-  resources :tasks
-  resources :informations do
+  resources :informations
+  resources :tasks do
     collection do
       get 'destroy_all_tmp'
       get 'save_all_tmp'
     end
   end
 
-  root to: "informations#index"
+  root to: "tasks#index"
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

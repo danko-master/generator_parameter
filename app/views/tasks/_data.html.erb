@@ -1,0 +1,24 @@
+Параметры генерации данных:<br/>
+<%= @tmp_data_params %>
+<% if @tmp_data.present? %>
+  <table class="table table-stripped">
+    <tr>
+      <th>№</th>
+      <th>date_time</th>
+      <th>val_numeric</th>
+      <th>parameter_id</th>
+      <th>subject_id</th>
+    </tr>
+    <% @tmp_data.sort.each do |item| %>
+      <tr>
+        <td><%= item %> (<%= Redis.current.hget(item, "formula_type") %>)</td>
+        <td><%= Date.parse(Redis.current.hget(item, "date_time")).strftime("%d.%m.%Y") if Redis.current.hget(item, "date_time") %></td>              
+        <td><%= Redis.current.hget(item, "val_numeric") %></td> 
+        <td><%= Redis.current.hget(item, "parameter_id") %></td> 
+        <td><%= Redis.current.hget(item, "subject_id") %></td>               
+      </tr>
+    <% end %>
+  </table>
+  <%= link_to "Сохранить в базе все сгенерированные данные", save_all_tmp_tasks_path, class: "btn btn-success", confirm: "Вы уверены?" %>
+  <%= link_to "Удалить сгенерированные данные", destroy_all_tmp_tasks_path, class: "btn btn-danger", confirm: "Вы уверены?", remote: true %>
+<% end %>
