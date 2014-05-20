@@ -8,6 +8,8 @@ set :branch, ENV['BRANCH'] || 'master'
 set :rvm_type, :user
 set :rvm_ruby_version, 'ruby-2.1.1@generator_parameter'
 
+
+set :unicorn_conf, "#{deploy_to}/current/config/unicorn.rb"
 set :start_cmd,    "bundle exec unicorn_rails -c #{unicorn_conf} -E #{rails_env} -D"
 set :unicorn_pid,  "#{deploy_to}/shared/pids/unicorn.pid"
 
