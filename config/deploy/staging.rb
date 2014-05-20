@@ -27,7 +27,7 @@ set :deploy_to, '/home/ubuntu/apps/#{application}'
 # --------------
  set :ssh_options, {
    keys: [File.join(ENV["HOME"], ".ssh", "sac.pem")],
-   forward_agent: true
+   forward_agent: true,
    auth_methods: %w(publickey)
  }
 #
