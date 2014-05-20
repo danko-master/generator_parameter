@@ -71,4 +71,4 @@ namespace :deploy do
 
 end
 
-after 'deploy:assets:precompile', 'deploy:symlink'
+before 'deploy:assets:precompile', 'deploy:symlink'
