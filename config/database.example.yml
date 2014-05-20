@@ -1,0 +1,24 @@
+development:
+  adapter: mysql2
+  # database: sac_dev_local
+  database: sac_dev_local2
+  username: root
+  encoding: utf8
+  password: "123"
+  host: localhost
+
+
+test:
+  adapter: mysql2
+  database: sac_test
+  username: sac
+  password: qir29sir
+  host: 127.0.0.1
+
+production:
+  adapter: mysql2
+  #database: sac
+  database: sac_dev
+  username: sac
+  password: qir29sir
+  host: 127.0.0.1
