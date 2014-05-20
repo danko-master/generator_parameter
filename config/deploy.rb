@@ -8,6 +8,9 @@ set :branch, ENV['BRANCH'] || 'master'
 set :rvm_type, :user
 set :rvm_ruby_version, 'ruby-2.1.1@generator_parameter'
 
+set :start_cmd,    "bundle exec unicorn_rails -c #{unicorn_conf} -E #{rails_env} -D"
+set :unicorn_pid,  "#{deploy_to}/shared/pids/unicorn.pid"
+
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
@@ -46,6 +49,7 @@ namespace :deploy do
     on roles(:app), in: :sequence, wait: 5 do
       # Your restart mechanism here, for example:
       # execute :touch, release_path.join('tmp/restart.txt')
+      execute "if [ -f #{unicorn_pid} ] && [ -e /proc/$(cat #{unicorn_pid}) ]; then kill -USR2 `cat #{unicorn_pid}`; else cd #{deploy_to}/current && #{start_cmd}; fi"
     end
   end
 
@@ -60,16 +64,7 @@ namespace :deploy do
     end
   end
 
-
-  # desc 'Create symlink'
-  # task :symlink do
-  #   on roles(:all) do
-  #     execute "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
-  #     # execute "ln -s #{shared_path}/Procfile #{release_path}/Procfile"
-  #     # execute "ln -s #{shared_path}/system #{release_path}/public/system"
-  #   end
-  # end
-
 end
 
 # after 'deploy:finalize_update', 'deploy:symlink'
+# cap production deploy:compile_assets

@@ -18,6 +18,8 @@ role :db,  %w{54.188.217.10}
 server '54.188.217.10', user: 'ubuntu', roles: %w{web app db}
 set :deploy_to, '/home/ubuntu/apps/generator_parameter'
 
+set :rails_env,    "production"
+
 # Custom SSH Options
 # ==================
 # You may pass any option but keep in mind that net/ssh understands a
