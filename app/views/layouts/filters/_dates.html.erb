@@ -1,0 +1,8 @@
+<div>
+  Начало<br/>
+  <input type="text" data-behaviour='datepicker' name="date_start" class="form-control input-shorter date-start" value="<%= (is_selected ? Redis.current.hget('tmp_data_params', 'date_start') : '') %>" >
+</div>
+<div>
+  Окончание<br/>
+  <input type="text" data-behaviour='datepicker' name="date_end" class="form-control input-shorter date-stop" value="<%= (is_selected ? Redis.current.hget('tmp_data_params', 'date_end') : '') %>" >
+</div>

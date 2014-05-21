@@ -21,7 +21,7 @@ class TasksController < ApplicationController
     elsif params["function_type"] == "lineal"
       set_data_lineal(redis, params, date_start, date_end)
     end
-    redis.hmset "tmp_data_params", "date_start", params["date_start"], "date_end", params["date_end"], "parameter_id", params["parameter"].to_i, "subject_id", params["subject"].to_i, "function_type", params["function_type"], 'dispersion', params["dispersion"], "lineal_k", params["lineal_k"], "lineal_b", params["lineal_b"]
+    redis.hmset "tmp_data_params", "date_start", params["date_start"], "date_end", params["date_end"], "parameter_id", params["parameter"].to_i, "subject_id", params["subject"].to_i, "function_type", params["function_type"], 'dispersion', params["dispersion"], "above_top", params["above_top"], "below_bottom", params["below_bottom"],"lineal_k", params["lineal_k"], "lineal_b", params["lineal_b"]
     flash.now[:success] =  "Успешно сформированы данные"
     get_index_data
     # redirect_to informations_path

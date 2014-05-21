@@ -1,0 +1,18 @@
+<% if @records.blank? %>
+  Нет данных
+<% else %>
+  <table class="table table-stripped">
+    <tr>
+      <th>Дата и время</th>
+      <th>Значение</th>
+      <th>Из генератора</th>
+    </tr>
+    <% @records.each do |record| %>
+      <tr>
+        <td><%= record.date_time.strftime('%d.%m.%Y') if record.date_time %></td>
+        <td><%= record.val_numeric %></td>
+        <td><%= (record.val_string == "from_generator") ? "Да" : "Нет" %></td>
+      </tr>
+    <% end %>
+  </table>
+<% end %>

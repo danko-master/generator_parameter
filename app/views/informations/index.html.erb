@@ -1,27 +1,15 @@
-<div>
-  Системы и объекты:<br/>Минздрав
-</div>
+<%= form_tag search_informations_path, method: :get, remote: true do %>
+  <div>
+    Системы и объекты:<br/>Минздрав
+  </div>
 
-<br/>
-<table class="table">
-  <tr>
-    <th>Наименование параметра</th>
-    <th>Субъект</th>
-  </tr>
-  <tr>
-    <td>1</td>
-    <td>123</td>
-  </tr>
-</table>
+  <br/>
+  <%= render partial: 'layouts/filters/subject_parameter', locals: {is_selected: false} %>
+  <br/>
+  <%= render partial: 'layouts/filters/dates', locals: {is_selected: false} %>
+  <br/>
+  <%= submit_tag "Получить данные", class: "btn btn-success" %>
+<% end %>
 
-<br/>
-<table class="table">
-  <tr>
-    <th>Дата и время</th>
-    <th>Значение</th>
-  </tr>
-  <tr>
-    <td>12.03.1999</td>
-    <td>90000</td>
-  </tr>
-</table>
+<div id="info_data"></div>
+

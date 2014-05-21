@@ -4,7 +4,7 @@ module ApplicationHelper
     class_name = current_page?(:controller => recognized[:controller], :action => recognized[:action]) ? 'active' : ''
     
     content_tag(:li, :class => class_name) do
-      link_to link_text, link_path
+      link_to link_text, link_path, data: {no_turbolink: true}
     end
   end  
 end

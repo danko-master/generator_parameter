@@ -1,8 +1,8 @@
 Уставки</br>
 <label>
-  <%= check_box_tag 'above_top' %> Выход за верхнюю
+  <%= check_box_tag 'above_top', 1, (Redis.current.hget('tmp_data_params', 'above_top').present? ? true : false) %> Выход за верхнюю
 </label>
 <label>
-  <%= check_box_tag 'below_bottom' %> Выход за нижнюю
+  <%= check_box_tag 'below_bottom', 1, (Redis.current.hget('tmp_data_params', 'below_bottom').present? ? true : false)  %> Выход за нижнюю
 </label>
 <br/>

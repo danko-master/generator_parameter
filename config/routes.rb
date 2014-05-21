@@ -1,6 +1,10 @@
 GeneratorParameter::Application.routes.draw do
 
-  resources :informations
+  resources :informations do
+    collection do
+      get 'search'
+    end
+  end
   resources :tasks do
     collection do
       get 'destroy_all_tmp'

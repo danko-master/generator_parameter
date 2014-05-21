@@ -1,0 +1,8 @@
+<div>
+  Параметр<br/>
+  <%= select_tag :parameter, options_for_select(Parameter.all.collect {|u| [ (u.uom.present? ? "#{u.name}, #{u.uom.name}" : u.name), u.id ] }, (is_selected ? Redis.current.hget('tmp_data_params', 'parameter_id').to_i : '')),  class: "form-control"  %>
+</div>
+<div>
+  Субъект<br/>
+  <%= select_tag :subject, options_from_collection_for_select(Subject.all, "id", "name", (is_selected ? Redis.current.hget('tmp_data_params', 'subject_id').to_i : '')),  class: "form-control input-short" %>
+</div>

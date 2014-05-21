@@ -2,22 +2,18 @@
   <table class="table">
     <tr>
       <td colspan="2">
-        <div>
-          Параметр<br/>
-          <%= select_tag :parameter, options_for_select(Parameter.all.collect {|u| [ (u.uom.present? ? "#{u.name}, #{u.uom.name}" : u.name), u.id ] }),  class: "form-control" %>
-        </div>
-        <div>
-          Субъект<br/>
-          <%= select_tag :subject, options_from_collection_for_select(Subject.all, "id", "name"),  class: "form-control input-short" %>
-        </div>
+        <%= render partial: 'layouts/filters/subject_parameter', locals: {is_selected: true} %>
       </td>
     </tr>
     <tr>
       <td colspan="2">
         Функция<br/>
         <select id="form_select_function" name="function_type" class="form-control input-short">
-          <option value="ustavki" selected="<%= Redis.current.hget('tmp_data_params', 'function_type') == 'lineal' ? '' : 'selected' %>">По уставкам</option>
-          <option value="lineal" selected="<%= Redis.current.hget('tmp_data_params', 'function_type') == 'lineal' ? 'selected' : '' %>">Линейная, y = k*x + b</option>
+
+          <option value="ustavki" <%= Redis.current.hget('tmp_data_params', 'function_type') == 'ustavki' ? 'selected=selected' : '' %>>По уставкам</option>
+
+          <option value="lineal" <%= Redis.current.hget('tmp_data_params', 'function_type') == 'lineal' ? 'selected=selected' : '' %>>Линейная, y = k*x + b</option>
+
         </select>
         <div id="d_ustavki" class="d_functions" style="display:<%= Redis.current.hget('tmp_data_params', 'function_type') == 'lineal' ? 'none' : 'block' %>">
           <%= render partial: 'layouts/functions/ustavki' %>
@@ -26,22 +22,19 @@
           <%= render partial: 'layouts/functions/lineal' %>
         </div>
         <br/>
-        Дисперсия <input type="text" name="dispersion" class="form-control input-shorter" value="<%= Redis.current.hget('tmp_data_params', 'dispersion') %>">
+        Дисперсия <input type="text" name="dispersion" class="form-control input-shorter" value="<%= Redis.current.hget('tmp_data_params', 'dispersion') %>">        
       </td>
     </tr>
     <tr>
       <td>
-        <div>
-          Начало<br/>
-          <input type="text" data-behaviour='datepicker' name="date_start" class="form-control input-shorter date-start" value="<%= Redis.current.hget('tmp_data_params', 'date_start') %>" >
-        </div>
-        <div>
-          Окончание<br/>
-          <input type="text" data-behaviour='datepicker' name="date_end" class="form-control input-shorter date-stop" value="<%= Redis.current.hget('tmp_data_params', 'date_end') %>" >
-        </div>
+        <%= render partial: 'layouts/filters/dates', locals: {is_selected: true} %>
         <div>
           Периодичность<br/>
           <%= select_tag :periodicity, options_for_select(Parameter.periodicity),  class: "form-control input-shorter" %>
+        </div>
+        <br/>
+        <div>
+          <%= submit_tag "Сгенерировать данные", class: "btn btn-primary", disabled: true, id: "submit_button" %>
         </div>
       </td>
       <td>
@@ -50,7 +43,6 @@
       </td>
     </tr>
   </table>
-
-  <%= submit_tag "Сгенерировать данные", class: "btn btn-primary", disabled: true, id: "submit_button" %>
+  
 <% end %>
 
