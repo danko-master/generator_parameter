@@ -49,7 +49,8 @@ namespace :unicorn do
   unicorn_pid = "#{pid_path}/unicorn.pid"
 
   def run_unicorn
-    execute "#{fetch(:bundle_binstubs)}/unicorn", "-c #{release_path}/config/unicorn.rb -D -E #{fetch(:stage)}"
+    # $ bundle exec unicorn_rails -c /home/ubuntu/apps/generator_parameter/current/config/unicorn.rb -E production -D
+    execute "cd #{release_path}  && bundle exec unicorn_rails -c #{release_path}/config/unicorn.rb -D -E #{fetch(:stage)}"
   end
 
   desc 'Start unicorn'

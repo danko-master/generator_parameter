@@ -2,7 +2,11 @@
 
 class TasksController < ApplicationController
   def index
-    get_index_data
+    respond_to do |format|
+      format.html { get_index_data }
+      # format.xml  { render :xml => get_index_data_for_xml }
+      format.xml  { send_data(get_index_data_for_xml, :filename => "param_val_generator_#{Time.now.to_i}.xml", :type => "text/xml") }
+    end     
   end
 
   # def new
@@ -105,7 +109,7 @@ class TasksController < ApplicationController
         return nil
       end        
         
-      redis.hmset "param_val:#{preset.id}", "date_time", preset.date_time, "val_numeric", y, "parameter_id", params["parameter"].to_i, "subject_id", params["subject"].to_i, "formula_type", "по уставкам"
+      redis.hmset "param_val:#{preset.id}", "date_time", preset.date_time, "val_numeric", y, "parameter_id", params["parameter"].to_i, "subject_id", params["subject"].to_i, "formula_type", "по уставкам", "preset_down_preset", preset.down_preset, "preset_up_preset", preset.up_preset
     end
   end
 
@@ -123,5 +127,53 @@ class TasksController < ApplicationController
   def get_index_data
     @tmp_data = Redis.current.keys("param_val:*")
     @tmp_data_params = Redis.current.hgetall("tmp_data_params")
+  end
+
+  def get_index_data_for_xml
+    get_index_data
+    redis_data = @tmp_data
+    builder = Nokogiri::XML::Builder.new do |xml|
+      xml.root {
+        xml.system_source "local system generator"
+        xml.date_time Time.now
+        xml.establishment "Test establishment"
+        xml.establishment_kladr nil
+        xml.establishment_address "Крымский мост, д.1"
+        
+        redis_data.each do |item|
+          xml.param_val {
+            xml.id item.to_s.split(":")[1]
+            xml.parent_id nil
+              parameter = Parameter.find(Redis.current.hget(item, "parameter_id"))
+            xml.name (parameter.present? ? parameter.name : nil)
+            xml.val_numeric Redis.current.hget(item, "val_numeric")
+            xml.val_string "from_generator_xml"
+              subject = Subject.find(Redis.current.hget(item, "subject_id"))
+            xml.subject_name (subject.present? ? subject.name : nil)
+            xml.subject_kladr (subject.present? ? subject.kladr.first.code : nil)
+            xml.subject_address nil
+            xml.description nil
+            xml.date_time Date.parse(Redis.current.hget(item, "date_time"))
+            xml.status nil
+            if Redis.current.hget(item, "formula_type") == "по уставкам"
+              xml.ustavka_value_bottom Redis.current.hget(item, "preset_down_preset")
+              xml.ustavka_value_bottom_warning nil
+              xml.ustavka_value_top Redis.current.hget(item, "preset_up_preset")
+              xml.ustavka_value_top_warning nil
+              xml.ustavka_type nil
+            else
+              xml.ustavka_value_bottom nil
+              xml.ustavka_value_bottom_warning nil
+              xml.ustavka_value_top nil
+              xml.ustavka_value_top_warning nil
+              xml.ustavka_type nil
+            end
+            xml.sub_param_val nil
+          }
+        end          
+        
+      }      
+    end
+    builder.to_xml
   end
 end
