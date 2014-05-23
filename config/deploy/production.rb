@@ -50,7 +50,7 @@ namespace :unicorn do
 
   def run_unicorn
     # $ bundle exec unicorn_rails -c /home/ubuntu/apps/generator_parameter/current/config/unicorn.rb -E production -D
-    execute "cd #{release_path}  && bundle exec unicorn_rails -c #{release_path}/config/unicorn.rb -D -E #{fetch(:stage)}"
+    execute "cd #{release_path}  && bundle exec unicorn -c #{release_path}/config/unicorn.rb -D -E #{fetch(:stage)}"
   end
 
   desc 'Start unicorn'
