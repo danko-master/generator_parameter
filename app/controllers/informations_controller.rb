@@ -9,6 +9,6 @@ class InformationsController < ApplicationController
     date_start = Date.parse(params["date_start"]) if params["date_start"].present?
     date_end = Date.parse(params["date_end"]) if params["date_end"].present?
 
-    @records = ParamVal.search(params[:parameter].to_i, params[:subject].to_i, date_start, date_end)
+    @records = ParamVal.search(params[:parameter].to_i, params[:subject].to_i, date_start, date_end).order("date_time DESC")
   end
 end

@@ -1,6 +1,7 @@
 Параметры генерации данных:<br/>
 <%= @tmp_data_params %>
 <% if @tmp_data.present? %>
+  <div id="graph_tasks"></div>
   <table class="table table-stripped">
     <tr>
       <th>№</th>
@@ -9,17 +10,21 @@
       <th>parameter_id</th>
       <th>subject_id</th>
     </tr>
-    <% @tmp_data.sort.each do |item| %>
+    <% @tmp_data_array = [] %>
+    <% @tmp_data.each do |item| %>
       <tr>
         <td><%= item %> (<%= Redis.current.hget(item, "formula_type") %>)</td>
         <td><%= Date.parse(Redis.current.hget(item, "date_time")).strftime("%d.%m.%Y") if Redis.current.hget(item, "date_time") %></td>              
         <td><%= Redis.current.hget(item, "val_numeric") %></td> 
         <td><%= Redis.current.hget(item, "parameter_id") %></td> 
         <td><%= Redis.current.hget(item, "subject_id") %></td>               
-      </tr>
+      </tr>  
+      <% @tmp_data_array << {date_time: Date.parse(Redis.current.hget(item, "date_time")), val_numeric: Redis.current.hget(item, "val_numeric")} %>    
     <% end %>
   </table>
   <%= link_to "Сохранить в базе все сгенерированные данные", save_all_tmp_tasks_path, class: "btn btn-success", confirm: "Вы уверены?" %>
   <%= link_to "Удалить данные", destroy_all_tmp_tasks_path, class: "btn btn-danger", confirm: "Вы уверены?", remote: true %>
   <%= link_to "Выгрузить в XML", tasks_path(:format => 'xml'), class: "btn btn-warning" %>
+   
+  <%= content_tag :div, "", id: "param_val_chart", data: {param_vals: @tmp_data_array } %>
 <% end %>

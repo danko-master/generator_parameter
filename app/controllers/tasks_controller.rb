@@ -125,7 +125,7 @@ class TasksController < ApplicationController
   end
 
   def get_index_data
-    @tmp_data = Redis.current.keys("param_val:*")
+    @tmp_data = Redis.current.keys("param_val:*").sort {|a,b| b.split(":")[1].to_i <=> a.split(":")[1].to_i}
     @tmp_data_params = Redis.current.hgetall("tmp_data_params")
   end
 

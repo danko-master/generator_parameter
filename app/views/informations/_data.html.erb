@@ -1,18 +1,32 @@
 <% if @records.blank? %>
   Нет данных
 <% else %>
+  <div id="graph_infos"></div>
   <table class="table table-stripped">
     <tr>
       <th>Дата и время</th>
-      <th>Значение</th>
+      <th>Значение (<span style="background-color: #167f39">цвет</span>)</th>
+      <th>Нижний диапазон (<span style="background-color: #f82a2a">цвет</span>)</th>
+      <th>Нижняя уставка (<span style="background-color: #e9e900">цвет</span>)</th>
+      <th>Верхняя уставка (<span style="background-color: #bf49c4">цвет</span>)</th>
+      <th>Верхний диапазон (<span style="background-color: #f66a0c">цвет</span>)</th>
       <th>Из генератора</th>
     </tr>
+    <% @tmp_data_array = [] %>
     <% @records.each do |record| %>
       <tr>
         <td><%= record.date_time.strftime('%d.%m.%Y') if record.date_time %></td>
-        <td><%= record.val_numeric %></td>
+        <td><%= record.val_numeric %></td>        
+          <% param_level = ParamLevel.where(parameter_id: record.parameter_id).where(subject_id: record.subject_id) %>
+          <% param_preset = ParamPreset.where(parameter_id: record.parameter_id).where(subject_id: record.subject_id).where("date_time <= ?", record.date_time.strftime('%Y')) if record.date_time  %>
+        <td><%= param_level.first.down_level if param_level.present? %></td>
+        <td><%= param_preset.first.down_preset if param_preset.present? %></td>
+        <td><%= param_preset.first.up_preset if param_preset.present? %></td>
+        <td><%= param_level.first.up_level if param_level.present? %></td>
         <td><%= (record.val_string == "from_generator") ? "Да" : "Нет" %></td>
       </tr>
-    <% end %>
+      <% @tmp_data_array << {date_time: record.date_time.strftime('%Y-%m-%d'), val_numeric: record.val_numeric, param_level_down_level: (param_level.present? ? param_level.first.down_level : "" ), param_preset_down_preset: (param_preset.present? ? param_preset.first.down_preset : "" ), param_preset_up_preset: (param_preset.present? ? param_preset.first.up_preset : "" ), param_level_up_level: (param_level.present? ? param_level.first.up_level : "" )} %>
+    <% end %>    
   </table>
+  <%= content_tag :div, "", id: "val_chart", data: {vals: @tmp_data_array } %>
 <% end %>
