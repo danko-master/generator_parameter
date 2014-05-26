@@ -16,7 +16,7 @@ APP_ROOT=/home/ubuntu/apps/generator_parameter
 PID=$APP_ROOT/tmp/pids/unicorn.pid
 # Здесь стоит среда development!
 CMD="cd $APP_ROOT; bundle exec unicorn -D -c $APP_ROOT/config/unicorn.rb -E production"
-AS_USER=root
+AS_USER=ubuntu
 set -u
 
 OLD_PIN="$PID.oldbin"
