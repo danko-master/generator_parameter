@@ -18,7 +18,7 @@
         <td><%= record.date_time.strftime('%d.%m.%Y') if record.date_time %></td>
         <td><%= record.val_numeric %></td>        
           <% param_level = ParamLevel.where(parameter_id: record.parameter_id).where(subject_id: record.subject_id) %>
-          <% param_preset = ParamPreset.where(parameter_id: record.parameter_id).where(subject_id: record.subject_id).where("date_time <= ?", record.date_time.strftime('%Y')) if record.date_time  %>
+          <% param_preset = ParamPreset.where(parameter_id: record.parameter_id).where(subject_id: record.subject_id).where("date_time = ?", Date.new(record.date_time.year,01,01)) if record.date_time  %>
         <td><%= param_level.first.down_level if param_level.present? %></td>
         <td><%= param_preset.first.down_preset if param_preset.present? %></td>
         <td><%= param_preset.first.up_preset if param_preset.present? %></td>

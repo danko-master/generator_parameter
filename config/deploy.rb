@@ -41,29 +41,46 @@ set :linked_files, %w{config/database.yml}
 
 namespace :deploy do
 
-  desc 'Restart application'
-  task :restart do
-    on roles(:app), in: :sequence, wait: 5 do
-      # Your restart mechanism here, for example:
-      # execute :touch, release_path.join('tmp/restart.txt')
-      # execute "if [ -f #{unicorn_pid} ] && [ -e /proc/$(cat #{unicorn_pid}) ]; then kill -USR2 `cat #{unicorn_pid}`; else cd #{deploy_to}/current && #{start_cmd}; fi"
-      # invoke 'unicorn:restart'
+  # desc 'Restart application'
+  # task :restart do
+  #   on roles(:app), in: :sequence, wait: 5 do
+  #     # Your restart mechanism here, for example:
+  #     # execute :touch, release_path.join('tmp/restart.txt')
+  #     # execute "if [ -f #{unicorn_pid} ] && [ -e /proc/$(cat #{unicorn_pid}) ]; then kill -USR2 `cat #{unicorn_pid}`; else cd #{deploy_to}/current && #{start_cmd}; fi"
+  #     # invoke 'unicorn:restart'
+  #   end
+  # end
+
+  # after :publishing, :restart
+
+  # after :restart, :clear_cache do
+  #   on roles(:web), in: :groups, limit: 3, wait: 10 do
+  #     # Here we can do anything such as:
+  #     # within release_path do
+  #     #   execute :rake, 'cache:clear'
+  #     # end
+  #     # 
+  #   end
+  # end
+
+  %w[start stop restart].each do |command|
+    desc "#{command} unicorn server"
+    task command, roles: :app, except: {no_release: true} do
+      run "chmod a+x /etc/init.d/unicorn_#{application}"
+      run "/etc/init.d/unicorn_#{application} #{command}"
     end
   end
 
-  after :publishing, :restart
-
-  after :restart, :clear_cache do
-    on roles(:web), in: :groups, limit: 3, wait: 10 do
-      # Here we can do anything such as:
-      # within release_path do
-      #   execute :rake, 'cache:clear'
-      # end
-      # 
-    end
+  task :setup_config do
+    on roles(:app) do
+    sudo "ln -nfs #{current_path}/config/unicorn_init.sh /etc/init.d/unicorn_#{application}"
+    # run "mkdir -p #{shared_path}/config"
+    # put File.read("config/database.example.production.yml"), "#{shared_path}/config/database.yml"
+    puts "Now edit the config files in #{shared_path}."
   end
 
 end
+
 
 # after 'deploy:finalize_update', 'deploy:symlink'
 # cap production deploy:compile_assets
