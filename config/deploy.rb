@@ -66,9 +66,9 @@ namespace :deploy do
   %w[start stop restart].each do |command|
     desc "#{command} unicorn server"
     task command do 
-      on roles: :app, except: {no_release: true} do
-        run "chmod a+x /etc/init.d/unicorn_generator_parameter"
-        run "/etc/init.d/unicorn_generator_parameter #{command}"
+      on roles(:app), except: {no_release: true} do
+        execute "chmod a+x /etc/init.d/unicorn_generator_parameter"
+        execute "/etc/init.d/unicorn_generator_parameter #{command}"
       end 
     end
   end
