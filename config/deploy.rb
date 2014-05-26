@@ -67,15 +67,15 @@ namespace :deploy do
     desc "#{command} unicorn server"
     task command do 
       on roles: :app, except: {no_release: true} do
-        run "chmod a+x /etc/init.d/unicorn_#{application}"
-        run "/etc/init.d/unicorn_#{application} #{command}"
+        run "chmod a+x /etc/init.d/unicorn_generator_parameter"
+        run "/etc/init.d/unicorn_generator_parameter #{command}"
       end 
     end
   end
 
   task :setup_config do
     on roles(:app) do
-      sudo "ln -nfs #{current_path}/config/unicorn_init.sh /etc/init.d/unicorn_#{application}"
+      sudo "ln -nfs #{current_path}/config/unicorn_init.sh /etc/init.d/unicorn_generator_parameter"
       # run "mkdir -p #{shared_path}/config"
       # put File.read("config/database.example.production.yml"), "#{shared_path}/config/database.yml"
       puts "Now edit the config files in #{shared_path}."
